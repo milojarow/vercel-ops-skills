@@ -1,0 +1,23 @@
+{
+  "id": "vercel-ops-006",
+  "skills": ["vercel-ops"],
+  "query": "I want to know how many people click the 'order now' button on my client's restaurant site, so I can show them the numbers at the end of the month and they keep paying me. Wire it up.",
+  "expected_behavior": [
+    "Activates the vercel-ops skill and routes to reference/plans-and-limits.md",
+    "States BEFORE writing any code that custom events via track() require Pro or above and do not exist on the Hobby free tier",
+    "Explains the failure mode: track() on Hobby throws no error and produces no data, so the wiring looks correct and silently never reports",
+    "Checks or asks which plan the account is on rather than assuming",
+    "Surfaces the commercial-use rule — being paid to build or host a client site is commercial usage, which Hobby forbids outright, independent of the custom-events question",
+    "Notes the two-property cap per custom event on Pro when designing the event shape",
+    "Does not wire track() first and discover the gate afterwards"
+  ],
+  "expected_content": [
+    "plans-and-limits.md",
+    "Pro",
+    "Hobby",
+    "custom events",
+    "commercial"
+  ],
+  "priority": "high",
+  "notes": "The most expensive silent failure in the skill, and it has two independent layers. First, track() is Pro-gated: on Hobby it neither errors nor collects, so the work is done, delivered, and only discovered as broken at month end — in front of the paying client. Second, the request itself reveals commercial usage on what may be a free-tier account, which Vercel's fair use guidelines forbid explicitly ('receiving payment to create, update, or host the site'). An answer that wires the code without raising either layer passes review and fails in production."
+}

@@ -101,6 +101,12 @@ session where the MCP is connected.
 
 ## Custom events
 
+> **Pro and above only. Check the plan before proposing this.** Custom events are not part of the
+> free tier. `track()` on a Hobby account throws no error, logs nothing, and returns no data — the
+> code looks correct and the numbers never arrive. On Pro each event carries at most **two**
+> properties; eight requires the Analytics Plus add-on. Full matrix:
+> [plans-and-limits.md](plans-and-limits.md).
+
 Pageviews say a page was seen. Custom events say a **business action happened**, which is the number
 worth reporting to whoever paid for the site.
 
@@ -127,6 +133,8 @@ dataset: "events", mode: "aggregate", by: ["day"], filter: "eventName eq 'order_
 Guidelines that keep the data usable:
 
 - **Name events after the business action**, not the widget — `order_click`, not `button_3`.
+- **Budget the properties.** Pro allows two per event, so choose them deliberately rather than
+  discovering the cap after the schema is set.
 - **Keep property cardinality low.** Properties are dimensions; one property per unbounded value
   (an order ID, a timestamp) makes aggregation useless.
 - **`track()` is client-side.** The component that calls it needs the client directive. Keep that
