@@ -54,13 +54,9 @@ then `vercel project speed-insights <projectName> --format json`.
 
 ## Link assembly
 
-```
-https://vercel.com/<teamSlug>/<projectName>/analytics
-https://vercel.com/<teamSlug>/<projectName>/speed-insights
-```
-
-`teamSlug` comes from `list_teams`; `projectName` comes from `.vercel/project.json`. Never hardcode
-either, and never substitute the local directory name for `projectName` — see the walls below.
+Single source of truth: **"Identity is derived, never stored" in `../SKILL.md`**. It holds the link
+template, where each value comes from, the `orgId` = `teamId` equivalence, and what to do when no
+directory was named. Do not restate it here — one copy, so the two cannot drift apart.
 
 ## Reading without a browser
 
@@ -72,6 +68,15 @@ either, and never substitute the local directory name for `projectName` — see 
 projectId, teamId, mode: "count", since, until
 → { data: { visitors, pageviews } }
 ```
+
+`since` and `until` accept a date string, an ISO 8601 timestamp, or a Unix timestamp in
+milliseconds — `"2026-07-01"` and `"2026-07-01T00:00:00.000Z"` both work. They are supplied together
+or not at all. The REST equivalents document ISO 8601 specifically, so prefer it when in doubt.
+
+> **The window cannot predate enablement.** Counts run "since Web Analytics was enabled". Query a
+> range that starts before that moment and the missing days read as zeros, not as an error. A
+> month-over-month comparison across the enablement date is meaningless — say so rather than
+> reporting a fabricated decline.
 
 **`aggregate`** groups rows. It requires `since`, `until` **and** `by`, and accepts one or two
 dimensions:
@@ -128,6 +133,30 @@ Guidelines that keep the data usable:
   component small so the directive does not spread up the tree.
 - Custom events are recorded in production only, exactly like pageviews.
 
+## When it reads zero
+
+The most common support question after running the runbook, and usually not a bug. Every cause below
+fails **silently** — nothing errors, nothing warns. Work the list in order and stop at the first hit.
+
+1. **Was the traffic production traffic?** Local and preview visits never count. The user refreshing
+   their own `localhost` or a preview URL produces exactly this symptom.
+2. **Did a production deploy ship after the component was added?** Check with `list_deployments` /
+   `get_deployment`. The code has to be live, not merely committed.
+3. **Are both halves wired?** The package plus `<Analytics />` without
+   `vercel project web-analytics` collects nothing. Enabling the product without the component in
+   the layout also collects nothing. Neither half errors when the other is missing.
+4. **Is `<Analytics />` in the *root* layout?** In a nested layout it silently reports only the
+   routes beneath it — which looks like a traffic problem rather than an instrumentation gap.
+5. **Does a `beforeSend` hook drop the event?** `<Analytics beforeSend={…} />` (and the
+   `webAnalyticsBeforeSend` global in non-React setups) can return `null` to redact an event. An
+   over-broad URL match there discards traffic with no trace. Grep for it before concluding anything.
+6. **Does the query window predate enablement?** See the note above — pre-enablement days read as
+   zeros.
+7. **Only then** look at the deployment itself: `get_deployment_build_logs` and `get_runtime_errors`.
+
+If 1–6 are clean and the site is genuinely new, the honest answer is *"it's wired correctly and
+waiting for visitors"* — not a debugging session. Say that plainly.
+
 ## Walls
 
 > **The local directory name is not the Vercel project name.** A repo checked out as `foo` is
@@ -135,16 +164,20 @@ Guidelines that keep the data usable:
 > Assembling the dashboard link from the directory name produces a 404, which reads to the user as
 > "you set it up wrong". Read `projectName` from `.vercel/project.json`.
 
-> **Data is collected in production only.** Immediately after enabling, both the dashboard and the
-> API report zero. Preview and local traffic never counts. This is expected behavior — say so
-> explicitly instead of diagnosing a problem that does not exist. If the site genuinely has no
-> traffic yet, the honest answer is "it's wired correctly and waiting for visitors", not a debugging
-> session.
+> **Data is collected in production only.** This is the root of most zero-data reports; it is the
+> first item in the diagnosis order above for that reason.
 
-> **Enabling and instrumenting are two different steps.** The package plus `<Analytics />` without
-> `vercel project web-analytics` collects nothing; enabling the product without the component in the
-> layout also collects nothing. Both are required, and neither errors when the other is missing.
+## What this file does not know
 
-> **A partial rollout is invisible.** `<Analytics />` belongs in the **root** layout. Placed in a
-> nested layout, it silently reports only the routes beneath it, and the numbers look like a traffic
-> problem rather than an instrumentation gap.
+Stated so nobody fills these in from intuition. If one of them decides an answer, query
+`search_vercel_documentation` and then record what came back here.
+
+- **Ingestion latency.** How long between a real visit and it appearing in the dashboard or API is
+  not documented here. Do not quote a number. If a user asks "how long until I see it", say it is
+  not instantaneous and check the docs rather than inventing a figure.
+- **Whether `vercel project web-analytics` is idempotent**, and whether any command reports the
+  current enabled/disabled state. Re-running it on an already-enabled project has not been verified
+  as safe here.
+- **Content blockers.** Whether and how browser extensions suppress the script is not established.
+  The `scriptSrc` prop and the self-hosted script path exist as knobs, but do not present blocking as
+  the diagnosis without evidence.

@@ -28,6 +28,12 @@ v0 emits **shadcn/ui** components — stated in the official Vercel plugin's own
 target project uses a different component library, every generation arrives in the wrong dialect.
 Four things have to happen before the code is committed.
 
+Before any of them, **determine what the target project actually uses** — do not assume. Read
+`package.json` for the UI dependency (`daisyui`, `@radix-ui/*` alongside a `components/ui/`
+directory for shadcn, `@mui/*`, and so on), and skim one existing component for the house style.
+Landing generated code in the wrong dialect is the failure this whole section exists to prevent, so
+spending one file read to confirm the target is never wasted.
+
 ### 1. Translate the component library
 
 shadcn/ui composes primitives with utility classes; a class-based library like DaisyUI expresses the
@@ -65,6 +71,14 @@ Generated markup sometimes carries escape sequences in text nodes. Inside JSX te
 a `á` renders as seven literal characters, not as `á`. Accented characters and inverted
 punctuation must be written directly. String literals inside attributes and expressions do interpret
 escapes, so the bug appears only in visible copy, which is exactly where it is most embarrassing.
+
+### 5. Re-check the exclusion against what the file actually contains
+
+The decision table above is normally consulted *before* generating. Consult it again now, because
+only at this point do you know what the generated code really does. A section described as "pricing"
+routinely arrives carrying checkout wiring; a "contact form" arrives posting somewhere. Generated
+code touching auth, payments, or data access does not land — it gets rewritten by hand, regardless of
+how good it looks.
 
 ## Removing the conversion tax
 

@@ -49,7 +49,9 @@ explain the option space first.
 | "how's traffic on X?" | `get_web_analytics` in `count` mode, then hand back the link |
 | "where are visitors coming from?" | `aggregate` by `referrerHostname`, `country`, or `route` |
 | "track the WhatsApp button" (any element) | `track()` wiring, then how to query that event later |
+| "analytics is broken / shows zero" | The diagnosis order in [reference/web-analytics.md](reference/web-analytics.md#when-it-reads-zero) — check the expected causes before debugging anything |
 | "the client commented on the preview" | `list_toolbar_threads` → `get_toolbar_thread` → `reply_to_toolbar_thread` |
+| "how did that agent run go?" | `list_agent_runs` → `get_agent_run` → `get_agent_run_trace` (eve framework observability) |
 
 ## Identity is derived, never stored
 
@@ -60,6 +62,15 @@ is what lets this skill work on any account — including a client's.
 |---|---|
 | `teamSlug` | `list_teams` |
 | `projectId`, `orgId`, `projectName` | the repo's `.vercel/project.json` |
+
+> **`orgId` is the `teamId`.** `.vercel/project.json` calls it `orgId`; every MCP tool asks for
+> `teamId`. They are the same `team_…` value — pass it straight through. Nothing surfaces this, and
+> looking for a separate `teamId` is a dead end.
+
+**When the user names no directory** ("our site", "the client's page"), there is no
+`.vercel/project.json` to read. Resolve through the API instead: `list_teams` → `list_projects` →
+match by name, and ask the user to disambiguate rather than guessing when more than one plausibly
+fits. Acting on the wrong project is worse than one clarifying question.
 
 Dashboard links are then **assembled**:
 
@@ -83,7 +94,7 @@ https://vercel.com/<teamSlug>/<projectName>/speed-insights
 | Building the dashboard link from the folder name | Use `projectName` from `.vercel/project.json`. |
 | Treating the Vercel MCP as read-only | Its own bundled config says so and is stale — the live server deploys, buys domains, and posts replies. |
 | Committing v0 output as-is into an established repo | v0 emits shadcn/ui and client-heavy components. See [reference/v0-bridge.md](reference/v0-bridge.md). |
-| Declaring an env var unknowable because `env pull` shows `[SENSITIVE]` | Verify the value in the deployed artifact instead. |
+| Declaring an env var unknowable — or regenerating it — because `env pull` shows `[SENSITIVE]` | Display masking, not data loss. Verify in the deployed artifact: [reference/tool-hierarchy.md](reference/tool-hierarchy.md#deployment-conventions). |
 | Running a local production build to "check the deploy" | Build on the platform; inspect with `get_deployment_build_logs`. |
 
 ## Reference
