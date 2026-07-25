@@ -5,6 +5,19 @@ description: Use when operating a Vercel project rather than writing framework c
 
 # vercel-ops
 
+> **📡 ACTIVE-SKILL MARKER:** Prefix your reply with 📡 **only on turns where the work touches the
+> `vercel-ops` domain** — reading or enabling analytics, querying live account state (visitors,
+> deployments, logs, runtime errors, agent runs, Toolbar threads), assembling a dashboard link,
+> deciding which surface answers a Vercel task, or landing v0 output. What matters is whether *this
+> turn* touches the domain.
+>
+> **Writing framework code is not this domain.** A turn spent authoring a component, a route, a
+> Server Action, or a Tailwind class is Next.js work even in a project that deploys to Vercel —
+> **omit 📡**. The marker means "I operated the platform", not "this project is hosted there".
+> Likewise omit it on plain git operations, typechecks, and edits in unrelated domains, even if the
+> skill loaded earlier in the session. If other active skills also apply to the same turn,
+> **stack their emojis** in the prefix.
+
 An **operating layer** over the official Vercel plugin, not a replacement for it.
 
 The official plugin (30 skills) is the right answer for framework and platform *concepts* — Next.js,
