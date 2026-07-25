@@ -1,0 +1,25 @@
+{
+  "name": "vercel-ops-skills",
+  "description": "Operate a Vercel project from an agent session: route between the official Vercel skills, the MCP server, the CLI and the REST API, run Web Analytics end to end, and land v0 output in an existing codebase.",
+  "owner": {
+    "name": "milojarow",
+    "url": "https://github.com/milojarow"
+  },
+  "plugins": [
+    {
+      "name": "vercel-ops-skills",
+      "source": "./",
+      "description": "An operating layer over the official Vercel plugin. Picks the right surface for a task (official skills vs the Vercel MCP server vs the CLI vs REST), enables and reads Web Analytics and Speed Insights end to end without the dashboard, wires custom events with track(), assembles project dashboard links from runtime-derived identity, covers Toolbar comment threads, and bridges v0 output into an existing codebase.",
+      "version": "0.1.0",
+      "author": {
+        "name": "milojarow",
+        "url": "https://github.com/milojarow"
+      },
+      "category": "developer-tools",
+      "keywords": ["vercel", "web-analytics", "deployment", "v0"],
+      "homepage": "https://github.com/milojarow/vercel-ops-skills",
+      "repository": "https://github.com/milojarow/vercel-ops-skills",
+      "license": "MIT"
+    }
+  ]
+}

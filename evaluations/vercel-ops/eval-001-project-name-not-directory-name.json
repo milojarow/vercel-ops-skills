@@ -1,0 +1,22 @@
+{
+  "id": "vercel-ops-001",
+  "skills": ["vercel-ops"],
+  "query": "I'm in ~/projects/web-northwind and I just finished wiring up analytics. Give me the dashboard link so I can check the numbers.",
+  "expected_behavior": [
+    "Activates the vercel-ops skill",
+    "Reads .vercel/project.json rather than deriving anything from the current directory name",
+    "Uses the projectName field from that file to build the link, NOT the folder name 'web-northwind'",
+    "Obtains the team slug from list_teams rather than hardcoding or guessing it",
+    "Assembles the link as https://vercel.com/<teamSlug>/<projectName>/analytics",
+    "If .vercel/project.json is missing, says to run 'vercel link' first instead of guessing the project"
+  ],
+  "expected_content": [
+    ".vercel/project.json",
+    "projectName",
+    "list_teams",
+    "teamSlug",
+    "vercel link"
+  ],
+  "priority": "high",
+  "notes": "Guards the #1 silent failure of the link runbook. The local checkout name and the Vercel project name diverge routinely — a directory named 'web-foo' is often registered as 'website-foo'. A naive answer string-interpolates the folder name and returns a confident 404, which the user reads as 'the analytics setup didn't work' rather than 'the link was wrong'. Failing this eval means the skill's most-used runbook hands back broken output."
+}

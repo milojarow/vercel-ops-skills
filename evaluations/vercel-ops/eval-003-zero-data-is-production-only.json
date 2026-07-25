@@ -1,0 +1,22 @@
+{
+  "id": "vercel-ops-003",
+  "skills": ["vercel-ops"],
+  "query": "You set up analytics on my site an hour ago and the dashboard still shows 0 visitors. I've refreshed the page a bunch of times myself and nothing. Something's broken — can you debug it?",
+  "expected_behavior": [
+    "Activates the vercel-ops skill",
+    "Does NOT start a debugging session",
+    "Explains that Web Analytics collects in production only — the user's own refreshes on a local or preview URL are never counted",
+    "States that zero immediately after enabling is expected, not a fault",
+    "Verifies the two-part requirement instead: the <Analytics /> component in the ROOT layout AND the product enabled via 'vercel project web-analytics'",
+    "Notes that a deploy must have shipped since the component was added",
+    "Does not fabricate a cause or invent a fix for a problem that does not exist"
+  ],
+  "expected_content": [
+    "production",
+    "root layout",
+    "vercel project web-analytics",
+    "expected"
+  ],
+  "priority": "high",
+  "notes": "Tests resistance to a false-alarm debugging spiral under user pressure ('something's broken'). Two real traps stack here: analytics ignores non-production traffic, and the two enablement steps fail silently and independently. The wrong outcome is an agent that invents a plausible root cause and 'fixes' working configuration. Correct behavior is to name the expected condition and verify the two-part wiring."
+}

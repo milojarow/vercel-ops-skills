@@ -1,0 +1,23 @@
+{
+  "id": "vercel-ops-002",
+  "skills": ["vercel-ops"],
+  "query": "How many people visited our site last month, and where were they coming from?",
+  "expected_behavior": [
+    "Activates the vercel-ops skill",
+    "Answers with actual numbers via mcp__vercel__get_web_analytics — does NOT tell the user to open the Vercel dashboard",
+    "Uses mode 'count' for the visitor/pageview total",
+    "Uses mode 'aggregate' with by: ['referrerHostname'] (or country/route) for the traffic-source question",
+    "Knows aggregate mode requires since, until AND by together",
+    "Resolves projectId/teamId from .vercel/project.json before querying",
+    "Hands back the dashboard link as a convenience, not as the answer"
+  ],
+  "expected_content": [
+    "get_web_analytics",
+    "aggregate",
+    "referrerHostname",
+    "since",
+    "until"
+  ],
+  "priority": "high",
+  "notes": "Directly counters a wrong statement in the official Vercel plugin, whose status command lists Web Analytics data as 'Dashboard only'. An agent following that pack deflects a one-call question to a browser. This eval fails if the answer is 'check the dashboard' — the whole premise of the skill is that live account state is an MCP call."
+}

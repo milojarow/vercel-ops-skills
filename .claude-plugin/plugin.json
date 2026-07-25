@@ -1,0 +1,14 @@
+{
+  "name": "vercel-ops-skills",
+  "version": "0.1.0",
+  "description": "An operating layer over the official Vercel plugin. Picks the right surface for a task (official skills vs the Vercel MCP server vs the CLI vs REST), enables and reads Web Analytics and Speed Insights end to end without the dashboard, wires custom events with track(), assembles project dashboard links from runtime-derived identity, covers Toolbar comment threads, and bridges v0 output into an existing codebase.",
+  "author": {
+    "name": "milojarow",
+    "url": "https://github.com/milojarow"
+  },
+  "license": "MIT",
+  "category": "developer-tools",
+  "keywords": ["vercel", "web-analytics", "deployment", "v0"],
+  "repository": "https://github.com/milojarow/vercel-ops-skills",
+  "homepage": "https://github.com/milojarow/vercel-ops-skills"
+}

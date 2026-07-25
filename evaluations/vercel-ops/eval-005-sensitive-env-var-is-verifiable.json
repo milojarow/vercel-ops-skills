@@ -1,0 +1,21 @@
+{
+  "id": "vercel-ops-005",
+  "skills": ["vercel-ops"],
+  "query": "I ran vercel env pull and the analytics ID comes back as [SENSITIVE] instead of the value. Did we lose it? Should I just regenerate it and re-add it?",
+  "expected_behavior": [
+    "Activates the vercel-ops skill",
+    "Says the value is NOT lost — 'vercel env add' marks the variable sensitive, so env pull redacts it by design",
+    "Does NOT recommend regenerating or re-adding the variable as the first move",
+    "Verifies what actually shipped by inspecting the deployed artifact rather than declaring the value unknowable",
+    "For a NEXT_PUBLIC_* variable, notes the value is present in the served HTML and can be confirmed there",
+    "Distinguishes what is known (evidence from the artifact) from what is assumed"
+  ],
+  "expected_content": [
+    "sensitive",
+    "env pull",
+    "deployed artifact",
+    "NEXT_PUBLIC"
+  ],
+  "priority": "medium",
+  "notes": "Two failures are possible and both are costly. Declaring the value unrecoverable strands the user; recommending regeneration churns a working variable and can break production. The correct move is a different verification path — read the artifact where the value materialized instead of the tool that redacts it. Also exercises the general habit of not treating a redacted read as proof of absence."
+}

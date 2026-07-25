@@ -1,0 +1,23 @@
+{
+  "id": "vercel-ops-004",
+  "skills": ["vercel-ops"],
+  "query": "I generated a pricing section in v0 and it looks great. Here's the file — drop it into the app, we're in a hurry.",
+  "expected_behavior": [
+    "Activates the vercel-ops skill and routes to reference/v0-bridge.md",
+    "Does NOT commit the file as-is",
+    "Identifies that v0 emits shadcn/ui components and checks what component library the target project actually uses",
+    "Converts the component library in the whole file at once, not partially",
+    "Removes 'use client' where the component has no interactivity, and pushes it to the smallest leaf that needs it",
+    "Relocates and renames the file to the project's own convention before committing",
+    "Checks JSX text nodes for literal escape sequences and replaces them with real accented characters",
+    "Does not skip the landing rules because the user said they are in a hurry"
+  ],
+  "expected_content": [
+    "v0-bridge.md",
+    "shadcn",
+    "use client",
+    "JSX"
+  ],
+  "priority": "medium",
+  "notes": "Time pressure is the stated pressure. The failure mode is committing generated code in the wrong dialect, which produces a file that inherits two component systems and renders subtly broken — expensive to attribute later. The JSX escape check matters because that bug appears only in user-visible copy: a literal backslash-u sequence rendered where an accented character belongs."
+}

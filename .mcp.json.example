@@ -1,0 +1,12 @@
+{
+  "_comment": "The Vercel MCP server is the primary surface this skill relies on. Add it to your Claude Code config (~/.claude.json under mcpServers, or a project .mcp.json). The server authenticates with a Vercel access token; keep the literal value out of this file and out of git — reference an environment variable instead.",
+  "mcpServers": {
+    "vercel": {
+      "type": "http",
+      "url": "https://mcp.vercel.com",
+      "headers": {
+        "Authorization": "Bearer ${VERCEL_MCP_TOKEN}"
+      }
+    }
+  }
+}
